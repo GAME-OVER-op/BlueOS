@@ -1,0 +1,83 @@
+diff --git a/build/soong/Android.bp b/build/soong/Android.bp
+index 237f7aa1..30b4d533 100644
+--- a/build/soong/Android.bp
++++ b/build/soong/Android.bp
+@@ -48,12 +48,17 @@ lineage_generator {
+     dep_root: "$(TARGET_KERNEL_SOURCE)",
+     dep_files: [
+         "Makefile",
++        "arch/$(KERNEL_ARCH)/Makefile",
++        "scripts/**/*",
+         "include/**/*",
+         "arch/$(KERNEL_ARCH)/include/**/*",
+         "techpack/audio/include/**/*",
+     ],
+ 
+-    tool_files: [":clean_headers.sh"],
++    tool_files: [
++        ":clean_headers.sh",
++        ":bionic_clean_header_py",
++    ],
+ }
+ 
+ lineage_generator {
+@@ -73,7 +78,10 @@ lineage_generator {
+         "usr/techpack/audio/include",
+     ],
+ 
+-    tool_files: [":clean_headers.sh"],
++    tool_files: [
++        ":clean_headers.sh",
++        ":bionic_clean_header_py",
++    ],
+ }
+ 
+ bootstrap_go_package {
+diff --git a/tools/clean_headers.sh b/tools/clean_headers.sh
+index 3a12160c..737a43f8 100755
+--- a/tools/clean_headers.sh
++++ b/tools/clean_headers.sh
+@@ -1,9 +1,42 @@
+ #!/bin/bash
+ set -eu
+ 
+-export ANDROID_BUILD_TOP="$PWD"
++# sbox runs this script from the sandbox root, where neither the real bionic
++# tools nor the bundled clang Python bindings live.  Switch to the real source
++# tree so cpp.py can find prebuilts/clang/... and its cwd check passes.
++export ANDROID_BUILD_TOP=/mnt/ytx-src/blueos-tiro-24.0/source
++cd "$ANDROID_BUILD_TOP"
+ 
+ ./bionic/libc/kernel/tools/clean_header.py -u \
+     "$1/usr/include/asm/signal.h" \
+     "$1/usr/include/asm-generic/signal.h" \
+     "$1/usr/include/linux/eventpoll.h"
++
++# 24.0 keeps audio UAPI headers in sm8650-modules, outside the kernel's
++# headers_install tree.  ar_osal includes <linux/msm_audio.h>, so restore them
++# into the generated header dirs after every headers_install run.
++AUDIO_SRC="$ANDROID_BUILD_TOP/kernel/nubia/sm8650-modules/qcom/opensource/audio-kernel/include/uapi/audio"
++if [ -d "$AUDIO_SRC" ]; then
++    mkdir -p "$1/usr/audio/include/uapi" "$1/usr/include/audio/include/uapi"
++    cp -a "$AUDIO_SRC/." "$1/usr/audio/include/uapi/"
++    cp -a "$AUDIO_SRC/." "$1/usr/include/audio/include/uapi/"
++fi
++
++# Same for display UAPI headers (libdrmutils includes <display/drm/msm_drm_pp.h>).
++DISPLAY_SRC="$ANDROID_BUILD_TOP/kernel/nubia/sm8650-modules/qcom/opensource/display-drivers/include/uapi/display"
++if [ -d "$DISPLAY_SRC" ]; then
++    mkdir -p "$1/usr/include/display"
++    cp -a "$DISPLAY_SRC/." "$1/usr/include/display/"
++fi
++
++# Vendor UAPI headers from the loadable kernel modules are not part of the
++# main kernel headers_install tree.  Copy any that are missing into the
++# generated include dir (e.g. linux/qti-smmu-proxy.h used by gralloc).
++find "$ANDROID_BUILD_TOP/kernel/nubia/sm8650-modules" -path '*/include/uapi/linux/*.h' -type f | while read -r hdr; do
++    rel=${hdr#*/include/uapi/}
++    dst="$1/usr/include/$rel"
++    if [ ! -f "$dst" ]; then
++        mkdir -p "$(dirname "$dst")"
++        cp "$hdr" "$dst"
++    fi
++done
