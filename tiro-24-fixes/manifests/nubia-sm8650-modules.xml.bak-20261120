@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+    <project
+        name="android_kernel_nubia_sm8650-modules"
+        path="kernel/nubia/sm8650-modules"
+        remote="nubia"
+        revision="5289b279859688ddddd0f294d909c958a458f6dc" />
+</manifest>

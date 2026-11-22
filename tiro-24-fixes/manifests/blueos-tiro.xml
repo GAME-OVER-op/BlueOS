@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+    <remote name="nubia" fetch="https://github.com/nubia-sm8650-devs/" />
+    <remote name="blueos" fetch="https://github.com/GDmio/" />
+
+    <project name="android_device_nubia_tiro"
+             path="device/nubia/tiro"
+             remote="nubia"
+             revision="lineage-24.0" />
+
+    <project name="android_device_nubia_sm8650-common"
+             path="device/nubia/sm8650-common"
+             remote="nubia"
+             revision="lineage-24.0" />
+
+    <project name="android_kernel_nubia_sm8650"
+             path="kernel/nubia/sm8650"
+             remote="nubia"
+             revision="lineage-24.0" />
+
+    <project name="android_kernel_nubia_sm8650-devicetrees"
+             path="kernel/nubia/sm8650-devicetrees"
+             remote="nubia"
+             revision="lineage-24.0" />
+
+    <project name="proprietary_vendor_nubia_tiro"
+             path="vendor/nubia/tiro"
+             remote="nubia"
+             revision="lineage-24.0" />
+
+    <project name="proprietary_vendor_nubia_sm8650-common"
+             path="vendor/nubia/sm8650-common"
+             remote="nubia"
+             revision="lineage-24.0" />
+
+    <project name="BlueOS"
+             path="vendor/blueos"
+             remote="blueos"
+             revision="0.9.0" />
+</manifest>
