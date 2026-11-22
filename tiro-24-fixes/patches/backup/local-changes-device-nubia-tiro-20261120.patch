@@ -1,0 +1,29 @@
+diff --git a/device.mk b/device.mk
+index aa7f5d0..eb4e37e 100644
+--- a/device.mk
++++ b/device.mk
+@@ -24,10 +24,6 @@ PRODUCT_PACKAGES += \
+ PRODUCT_PACKAGES += \
+     SettingsProviderResTiro
+ 
+-# Slider
+-PRODUCT_PACKAGES += \
+-    LineageSlider \
+-    vendor.lineage.slider-service.default
+ 
+ # Inherit from proprietary targets
+ $(call inherit-product, vendor/nubia/tiro/tiro-vendor.mk)
+diff --git a/vendor.prop b/vendor.prop
+index 81dcbc6..d952fc0 100644
+--- a/vendor.prop
++++ b/vendor.prop
+@@ -4,9 +4,3 @@ ro.vendor.feature.nubia.exif.module=NUBIA_REDMAGIC9S
+ ro.vendor.mifavor.custom=abroad
+ ro.vendor.product.ztename=REDMAGIC 9 Pro
+ 
+-# Slider
+-ro.vendor.slider.code=40
+-ro.vendor.slider.direction=up
+-ro.vendor.slider.edge=right
+-ro.vendor.slider.input_name=gpio-keys_nubia
+-ro.vendor.slider.offset_pixels=1610
