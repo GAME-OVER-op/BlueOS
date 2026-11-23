@@ -1,0 +1,21 @@
+diff --git a/bootanimation/Android.bp b/bootanimation/Android.bp
+index bcd8e3fa..40ab009f 100644
+--- a/bootanimation/Android.bp
++++ b/bootanimation/Android.bp
+@@ -11,6 +11,7 @@ genrule {
+     ],
+     tool_files: [
+         "bootanimation.tar",
++        "bootanimation.zip",
+         "desc.txt",
+         "gen-bootanimation.sh",
+     ],
+@@ -21,7 +22,7 @@ genrule {
+                  soong_config_variable("lineage_bootanimation", "half_res"),
+                  soong_config_variable("lineage_bootanimation", "prebuilt_file")), {
+         (any @ height, any @ width, any @ half_res, any @ prebuilt_file):
+-            "cp ../../../../../" + prebuilt_file + " $(out)",
++            "cp $(location bootanimation.zip) $(out)",
+         (any @ height, any @ width, any @ half_res, default):
+             "$(location gen-bootanimation.sh)" +
+             " $(out)" +
