@@ -32,7 +32,9 @@ plain copies plus patches so nothing is lost. `vendor/blueos` itself is unmodifi
      the sandbox root) and restores vendor UAPI headers after each
      `headers_install` run: audio (`linux/msm_audio.h`), display
      (`display/drm/msm_drm_pp.h`) and all missing `include/uapi/linux/*.h`
-     from `kernel/nubia/sm8650-modules`.
+     from `kernel/nubia/sm8650-modules`. Copied audio headers are additionally
+     passed through bionic's `clean_header.py` to strip `__user`, which
+     otherwise breaks `sound/devdep_params.h`.
 
 4. **Build script** — `scripts/build-blueos-24.sh`
    - `lunch lineage_tiro-cp2a-userdebug` — stable release:

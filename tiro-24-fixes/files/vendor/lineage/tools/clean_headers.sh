@@ -20,6 +20,15 @@ if [ -d "$AUDIO_SRC" ]; then
     mkdir -p "$1/usr/audio/include/uapi" "$1/usr/include/audio/include/uapi"
     cp -a "$AUDIO_SRC/." "$1/usr/audio/include/uapi/"
     cp -a "$AUDIO_SRC/." "$1/usr/include/audio/include/uapi/"
+    # The raw vendor headers still contain kernel-only annotations such as
+    # __user (e.g. sound/devdep_params.h).  Run bionic's cleaner on them.
+    for AUDIO_DST in "$1/usr/audio/include/uapi" "$1/usr/include/audio/include/uapi"; do
+        files=$(cd "$AUDIO_DST" && find . -name '*.h' -printf '%P\n' | sort)
+        if [ -n "$files" ]; then
+            echo "$files" | xargs -r python3 ./bionic/libc/kernel/tools/clean_header.py \
+                -u -k "$AUDIO_DST" -d "$AUDIO_DST"
+        fi
+    done
 fi
 
 # Same for display UAPI headers (libdrmutils includes <display/drm/msm_drm_pp.h>).
