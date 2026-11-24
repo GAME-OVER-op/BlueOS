@@ -5,7 +5,7 @@ SRC=/mnt/ytx-src/blueos-tiro-24.0/source
 BUILD=/mnt/axion-build/blueos-tiro-24.0
 OUT="$BUILD/out"
 CACHE=/mnt/axion-cache/ccache
-JOBS=12
+JOBS=8   # R8 (Xmx4096M per JVM) crashed repeatedly at -j12 on 31 GiB RAM
 LOG="$BUILD/build-blueos-24-$(date +%Y%m%d-%H%M%S).log"
 
 exec > >(tee -a "$LOG") 2>&1
