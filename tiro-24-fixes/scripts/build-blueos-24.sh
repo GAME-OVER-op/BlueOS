@@ -33,6 +33,8 @@ export CCACHE_EXEC="$(command -v ccache)"
 # bionic/libc/kernel/tools/cpp.py imports clang.cindex; make the bundled
 # bindings visible inside the sbox sandbox too.
 export PYTHONPATH="$SRC/prebuilts/clang/host/linux-x86/clang-stable/lib/python3/site-packages"
+# siso hashfs repeatedly fails on DTB_OBJ/* dirs; use plain ninja instead.
+export SOONG_NINJA=ninja
 
 mkdir -p "$OUT" "$CACHE"
 
